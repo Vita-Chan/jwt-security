@@ -19,7 +19,7 @@ mybatis:
 jwt:
   header: Authorization
   secret: mySecret
-  expiration: 50
+  expiration: 5000000
   tokenHead: "Bearer "
   route:
     authentication:

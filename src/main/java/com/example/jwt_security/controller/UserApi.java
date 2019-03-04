@@ -25,7 +25,7 @@ public class UserApi {
 
 
   @GetMapping("/getPassToken")
-  @PreAuthorize("hasRole('USER')")
+  @PreAuthorize("hasRole('USER') || hasRole('ADMIN')")
   public String getPassToken() {
     System.out.println("你已通过验证: USER");
     return "你已通过验证: USER";
