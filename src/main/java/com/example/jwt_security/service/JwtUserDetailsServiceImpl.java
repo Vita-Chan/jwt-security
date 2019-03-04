@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 /**
- * 根据spring security要求创建一个获取UserDetails的实现类
+ * 根据spring security要求创建一个获取UserDetailsService的实现类
  */
 @Service
 public class JwtUserDetailsServiceImpl implements UserDetailsService {

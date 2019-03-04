@@ -17,6 +17,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * AuthenticationProvider
+ * 你可以提供一个实现了 AuthenticationProvider 的bean来定制自己的认证机制。下面的例子展示了如何定制认证机制
+ * 这仅用于 AuthenticationManagerBuilder 不存在的情况下！
+ * 
+ */
 @Configuration
 @EnableWebSecurity //开启spring security
 @EnableGlobalMethodSecurity(prePostEnabled = true) //开启spring security注解的方式
@@ -38,6 +44,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .passwordEncoder(new BCryptPasswordEncoder());
   }
 
+  /**
+   *  - httpSecurity
+   * WebSecurityConfigurerAdapter 的默认方法configure, 配置了HttpSecurity
+   * 用于设置哪些请求需要认证, 设置基于表单的认证
+   * @param httpSecurity
+   * @throws Exception
+   */
   @Override
   protected void configure(HttpSecurity httpSecurity) throws Exception {
     httpSecurity
