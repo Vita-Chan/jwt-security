@@ -17,7 +17,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
- * OncePerRequestFilter - 见名知意, 每一次请求的Filter
+ * OncePerRequestFilter - 这个Filter的作用是一个请求只执行过滤一次
+ * 其实SpringSecurity的运行流程就是进来一个 请求之后通过一系列的Filter进行过滤的
  */
 @Component
 public class AuthenticationTokenFilter extends OncePerRequestFilter {
@@ -43,16 +44,12 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
       String username = jwtTokenUtil.getUsernameFromToken(authToken); // - 通过这个token获取用户名
       logger.info("checking authentication: " + username);
 
-      if (username != null && SecurityContextHolder.getContext().getAuthentication()
-          == null) {  // - 就是说这个用户不等于null, 但是没有进行身份验证
-        UserDetails userDetails = this.userDetailsService
-            .loadUserByUsername(username); // - 通过用户名加载出用户详细信息UserDetails
-
+      if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {  // - 就是说这个用户不等于null, 但是没有进行身份验证
+        UserDetails userDetails = this.userDetailsService.loadUserByUsername(username); // - 通过用户名加载出用户详细信息UserDetails
         if (jwtTokenUtil.validateToken(authToken, userDetails)) { // - 验证token 如果通过
           UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
               userDetails, null, userDetails.getAuthorities()); // - 根据用户的信息和所属权限的信息进行验证
-          authenticationToken
-              .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+          authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
           logger.info("authenticated user " + username + ", setting security context");
           SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }

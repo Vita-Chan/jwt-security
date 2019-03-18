@@ -10,7 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * 自定义没权限是的报错机制, 用法就是实现 AccessDeniedHandler接口, 并重写handle方法即可
+ * 自定义没权限的报错机制, 用法就是实现 AccessDeniedHandler接口, 并重写handle方法即可
+ * AccessDeniedHandler: - 对权限操作的处理器, 拒绝访问时做的处理
  */
 @Component
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {

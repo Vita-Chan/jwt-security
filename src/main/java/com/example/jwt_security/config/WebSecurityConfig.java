@@ -28,13 +28,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Autowired
   private UserDetailsService userDetailsService;
+
   @Autowired
-  CustomAccessDeniedHandler accessDeniedHandler;    // 无权访问返回的JSON 格式数据给前端（否则为 403 html 页面）
+  private CustomAccessDeniedHandler accessDeniedHandler;// 无权访问返回的JSON 格式数据给前端（否则为 403 html 页面）
+
+  @Autowired
+  private EntryPointUnauthorizedHandler entryPointUnauthorizedHandler; // token无效或者未携带token时候的异常
 
   /**
-   * 配置AuthenticationManagerBuilder authenticationManagerBuilder.userDetailsService(this.userDetailsService)
-   * - 获得一个DaoAuthenticationConfigurer, 见名知意 操作数据库的 .passwordEncoder(new BCryptPasswordEncoder()) -
-   * 操作数据对密码的加密算法用Spring Security自带的加密方式
+   * AuthenticationManagerBuilder - SecurityBuilder用于创建验证管理器。
+   * 允许轻松构建内存身份验证、LDAP身份验证、基于JDBC的身份验证、添加UserDetailsService和添加AuthenticationProvider的。
+   * 这里暂时没有使用
    */
   @Autowired
   public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder)
@@ -68,7 +72,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     httpSecurity.headers().cacheControl();
 
-    httpSecurity.exceptionHandling().accessDeniedHandler(accessDeniedHandler);  // - 没有权限情况下使用自定义的报错机制给请求者
+    httpSecurity.exceptionHandling().accessDeniedHandler(accessDeniedHandler) // - 没有权限情况下使用自定义的报错机制给请求者
+    .authenticationEntryPoint(entryPointUnauthorizedHandler);   // - token无效
 
     httpSecurity.addFilterBefore(authenticationTokenFilterBean(),
         UsernamePasswordAuthenticationFilter.class);
