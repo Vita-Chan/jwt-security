@@ -1,7 +1,7 @@
 package com.example.jwt_security.controller;
 
-import com.example.jwt_security.entity.JwtAuthenticationRequest;
-import com.example.jwt_security.entity.JwtAuthenticationResponse;
+import com.example.jwt_security.entity.AuthenticationRequest;
+import com.example.jwt_security.entity.AuthenticationResponse;
 import com.example.jwt_security.entity.User;
 import com.example.jwt_security.mapper.UserMapper;
 import com.example.jwt_security.service.AuthService;
@@ -33,10 +33,10 @@ public class AuthController {
 
   @PostMapping("/auth/login")
   public ResponseEntity<?> createAuthenticationToken(
-      @RequestBody JwtAuthenticationRequest authenticationRequest) throws AuthenticationException {
+      @RequestBody AuthenticationRequest authenticationRequest) throws AuthenticationException {
     String token = authService
         .login(authenticationRequest.getUsername(), authenticationRequest.getPassword());
-    return ResponseEntity.ok(new JwtAuthenticationResponse(token));
+    return ResponseEntity.ok(new AuthenticationResponse(token));
   }
 
   @GetMapping("/auth/refresh")
@@ -47,7 +47,7 @@ public class AuthController {
     if (refreshedToken == null) {
       return ResponseEntity.badRequest().body(null);
     } else {
-      return ResponseEntity.ok(new JwtAuthenticationResponse(refreshedToken));
+      return ResponseEntity.ok(new AuthenticationResponse(refreshedToken));
     }
   }
 

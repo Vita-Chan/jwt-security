@@ -1,7 +1,7 @@
 package com.example.jwt_security.service;
 
 import com.example.jwt_security.entity.User;
-import com.example.jwt_security.factory.JwtUserFactory;
+import com.example.jwt_security.factory.UserDetailsFactory;
 import com.example.jwt_security.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
  * 根据spring security要求创建一个获取UserDetailsService的实现类
  */
 @Service
-public class JwtUserDetailsServiceImpl implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
 
   @Autowired
   private UserMapper userMapper;
@@ -26,7 +26,7 @@ public class JwtUserDetailsServiceImpl implements UserDetailsService {
       throw new UsernameNotFoundException(
           String.format("No user found with username '%s'.", username));
     } else {
-      return JwtUserFactory.create(user);
+      return UserDetailsFactory.create(user);
     }
   }
 }

@@ -1,7 +1,6 @@
 package com.example.jwt_security.filter;
 
 import com.example.jwt_security.utils.JwtTokenUtil;
-import com.google.gson.JsonObject;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -21,7 +20,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
  * OncePerRequestFilter - 见名知意, 每一次请求的Filter
  */
 @Component
-public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
+public class AuthenticationTokenFilter extends OncePerRequestFilter {
 
   @Autowired
   private UserDetailsService userDetailsService;

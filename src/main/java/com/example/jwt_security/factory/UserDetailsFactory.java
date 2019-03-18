@@ -1,6 +1,6 @@
 package com.example.jwt_security.factory;
 
-import com.example.jwt_security.entity.JwtUser;
+import com.example.jwt_security.entity.UserDetailsImpl;
 import com.example.jwt_security.entity.User;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,13 +10,13 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 /**
  * JwtUser的工厂类
  */
-public class JwtUserFactory {
+public class UserDetailsFactory {
 
-  private JwtUserFactory() {
+  private UserDetailsFactory() {
   }
 
-  public static JwtUser create(User user) {
-    return new JwtUser(
+  public static UserDetailsImpl create(User user) {
+    return new UserDetailsImpl(
         user.getId(),
         user.getUsername(),
         user.getPassword(),

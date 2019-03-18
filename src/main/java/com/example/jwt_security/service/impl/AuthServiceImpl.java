@@ -1,7 +1,7 @@
 package com.example.jwt_security.service.impl;
 
 
-import com.example.jwt_security.entity.JwtUser;
+import com.example.jwt_security.entity.UserDetailsImpl;
 import com.example.jwt_security.entity.User;
 import com.example.jwt_security.mapper.UserMapper;
 import com.example.jwt_security.mapper.UserRoleMapper;
@@ -80,7 +80,7 @@ public class AuthServiceImpl implements AuthService {
   public String refresh(String oldToken) {
     String token = oldToken.substring(tokenHead.length());
     String username = jwtTokenUtil.getUsernameFromToken(token);
-    JwtUser user = (JwtUser) userDetailsService.loadUserByUsername(username);
+    UserDetailsImpl user = (UserDetailsImpl) userDetailsService.loadUserByUsername(username);
     if (jwtTokenUtil.canTokenBeRefreshed(token, user.getLastPasswordResetDate())) {
       String refresh = jwtTokenUtil.refreshToken(token);
       userService.updateByUserToken(userRepository.findByUsername(username).getId(), refresh);

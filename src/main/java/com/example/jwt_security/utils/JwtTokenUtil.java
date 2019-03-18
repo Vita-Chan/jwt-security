@@ -1,7 +1,6 @@
 package com.example.jwt_security.utils;
 
-import com.example.jwt_security.entity.JwtUser;
-import com.example.jwt_security.entity.User;
+import com.example.jwt_security.entity.UserDetailsImpl;
 import com.example.jwt_security.mapper.UserMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -10,7 +9,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -165,7 +163,7 @@ public class JwtTokenUtil implements Serializable {
    * @param userDetails 相当于能获得用户信息
    */
   public Boolean validateToken(String token, UserDetails userDetails) {
-    JwtUser user = (JwtUser) userDetails;
+    UserDetailsImpl user = (UserDetailsImpl) userDetails;
 
     String username = getUsernameFromToken(token);
     String userToken = userMapper.findByUsername(username).getToken();

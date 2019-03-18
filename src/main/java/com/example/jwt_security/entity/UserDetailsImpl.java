@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 /**
  * springSecurity 规定必须的user类
  */
-public class JwtUser implements UserDetails {
+public class UserDetailsImpl implements UserDetails {
 
   private final int id;
   private final String username;
@@ -18,7 +18,7 @@ public class JwtUser implements UserDetails {
   private final Collection<? extends GrantedAuthority> authorities;
   private final Date lastPasswordResetDate; //上次密码重置日期
 
-  public JwtUser(int id, String username, String password,
+  public UserDetailsImpl(int id, String username, String password,
       Collection<? extends GrantedAuthority> authorities, Date lastPasswordResetDate) {
     this.id = id;
     this.username = username;

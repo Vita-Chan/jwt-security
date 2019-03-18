@@ -2,18 +2,18 @@ package com.example.jwt_security.entity;
 
 import java.io.Serializable;
 
-public class JwtAuthenticationRequest implements Serializable {
+public class AuthenticationRequest implements Serializable {
 
   private static final long serialVersionUID = -8445943548965154778L;
 
   private String username;
   private String password;
 
-  public JwtAuthenticationRequest() {
+  public AuthenticationRequest() {
     super();
   }
 
-  public JwtAuthenticationRequest(String username, String password) {
+  public AuthenticationRequest(String username, String password) {
     this.setUsername(username);
     this.setPassword(password);
   }

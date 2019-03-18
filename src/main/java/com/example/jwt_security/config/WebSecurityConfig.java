@@ -1,6 +1,6 @@
 package com.example.jwt_security.config;
 
-import com.example.jwt_security.filter.JwtAuthenticationTokenFilter;
+import com.example.jwt_security.filter.AuthenticationTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +29,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   @Autowired
   private UserDetailsService userDetailsService;
   @Autowired
-  AjaxAccessDeniedHandler accessDeniedHandler;    // 无权访问返回的 JSON 格式数据给前端（否则为 403 html 页面）
+  CustomAccessDeniedHandler accessDeniedHandler;    // 无权访问返回的JSON 格式数据给前端（否则为 403 html 页面）
+
   /**
    * 配置AuthenticationManagerBuilder authenticationManagerBuilder.userDetailsService(this.userDetailsService)
    * - 获得一个DaoAuthenticationConfigurer, 见名知意 操作数据库的 .passwordEncoder(new BCryptPasswordEncoder()) -
@@ -50,9 +51,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity httpSecurity) throws Exception {
     httpSecurity
-        .csrf().disable() // - 禁用csrf防护, 因为JWT能避免csrf攻击
+        .csrf().disable()
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-        .authorizeRequests()// - 基于token，所以不需要session
+        .authorizeRequests()
         .antMatchers(
             HttpMethod.GET,
             "/",
@@ -61,21 +62,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/**/*.html",
             "/**/*.css",
             "/**/*.js"
-        ).permitAll()// 允许对于网站静态资源的无授权访问
-        .antMatchers("/auth/**").permitAll()// - 允许/auth/**下的访问
-        .anyRequest().authenticated(); // - 除上面外的所有请求全部需要鉴权认证
+        ).permitAll()
+        .antMatchers("/auth/**").permitAll()
+        .anyRequest().authenticated();
 
-    httpSecurity.headers().cacheControl();// - 禁用缓存
+    httpSecurity.headers().cacheControl();
 
-    httpSecurity.exceptionHandling().accessDeniedHandler(accessDeniedHandler); // 无权访问 JSON 格式的数据
+    httpSecurity.exceptionHandling().accessDeniedHandler(accessDeniedHandler);  // - 没有权限情况下使用自定义的报错机制给请求者
 
     httpSecurity.addFilterBefore(authenticationTokenFilterBean(),
-        UsernamePasswordAuthenticationFilter.class);// - 添加JWT filter
+        UsernamePasswordAuthenticationFilter.class);
   }
 
   @Bean
-  public JwtAuthenticationTokenFilter authenticationTokenFilterBean() throws Exception {
-    return new JwtAuthenticationTokenFilter();
+  public AuthenticationTokenFilter authenticationTokenFilterBean() throws Exception {
+    return new AuthenticationTokenFilter();
   }
 
   /**
