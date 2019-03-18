@@ -11,6 +11,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
  * JwtUser的工厂类
  */
 public class JwtUserFactory {
+
   private JwtUserFactory() {
   }
 

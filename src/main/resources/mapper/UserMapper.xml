@@ -16,17 +16,19 @@
     where id = #{id}
   </update>
 
-  <insert id="addUser" useGeneratedKeys="true" keyProperty="id" parameterType="com.example.jwt_security.entity.User">
+  <insert id="addUser" useGeneratedKeys="true" keyProperty="id"
+    parameterType="com.example.jwt_security.entity.User">
     insert user (
-      username,
-      password
+    username,
+    password
     )values (
-      #{username},
-      #{password}
+    #{username},
+    #{password}
     )
   </insert>
 
   <select id="queryUserRoles" resultType="java.lang.String">
-    select role.name from sys_user_role left join role on sys_user_role.role_id = role.id where sys_user_role.user_id = #{id}
+    select role.name from sys_user_role left join role on sys_user_role.role_id = role.id where
+    sys_user_role.user_id = #{id}
   </select>
 </mapper>

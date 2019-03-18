@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class AuthController {
+
   @Value("${jwt.header}")
   private String tokenHeader;
 
@@ -33,16 +34,17 @@ public class AuthController {
   @PostMapping("/auth/login")
   public ResponseEntity<?> createAuthenticationToken(
       @RequestBody JwtAuthenticationRequest authenticationRequest) throws AuthenticationException {
-    String token = authService.login(authenticationRequest.getUsername(), authenticationRequest.getPassword());
+    String token = authService
+        .login(authenticationRequest.getUsername(), authenticationRequest.getPassword());
     return ResponseEntity.ok(new JwtAuthenticationResponse(token));
   }
 
   @GetMapping("/auth/refresh")
   public ResponseEntity<?> refreshAndGetAuthenticationToken(
-      HttpServletRequest request) throws AuthenticationException{
+      HttpServletRequest request) throws AuthenticationException {
     String token = request.getHeader(tokenHeader);
     String refreshedToken = authService.refresh(token);
-    if(refreshedToken == null) {
+    if (refreshedToken == null) {
       return ResponseEntity.badRequest().body(null);
     } else {
       return ResponseEntity.ok(new JwtAuthenticationResponse(refreshedToken));
@@ -50,7 +52,7 @@ public class AuthController {
   }
 
   @PostMapping(value = "/auth/register")
-  public User register(@RequestBody User addedUser) throws AuthenticationException{
+  public User register(@RequestBody User addedUser) throws AuthenticationException {
     User user = userService.findByUserId(authService.register(addedUser));
     return user;
   }

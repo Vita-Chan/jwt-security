@@ -18,38 +18,34 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
- * AuthenticationProvider
- * 你可以提供一个实现了 AuthenticationProvider 的bean来定制自己的认证机制。下面的例子展示了如何定制认证机制
- * 这仅用于 AuthenticationManagerBuilder 不存在的情况下！
- * 
+ * AuthenticationProvider 你可以提供一个实现了 AuthenticationProvider 的bean来定制自己的认证机制。下面的例子展示了如何定制认证机制 这仅用于
+ * AuthenticationManagerBuilder 不存在的情况下！
  */
 @Configuration
 @EnableWebSecurity //开启spring security
 @EnableGlobalMethodSecurity(prePostEnabled = true) //开启spring security注解的方式
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
   @Autowired
   private UserDetailsService userDetailsService;
-
+  @Autowired
+  AjaxAccessDeniedHandler accessDeniedHandler;    // 无权访问返回的 JSON 格式数据给前端（否则为 403 html 页面）
   /**
-   * 配置AuthenticationManagerBuilder
-   * authenticationManagerBuilder.userDetailsService(this.userDetailsService) - 获得一个DaoAuthenticationConfigurer, 见名知意 操作数据库的
-   * .passwordEncoder(new BCryptPasswordEncoder()) - 操作数据对密码的加密算法用Spring Security自带的加密方式
-   * @param authenticationManagerBuilder
-   * @throws Exception
+   * 配置AuthenticationManagerBuilder authenticationManagerBuilder.userDetailsService(this.userDetailsService)
+   * - 获得一个DaoAuthenticationConfigurer, 见名知意 操作数据库的 .passwordEncoder(new BCryptPasswordEncoder()) -
+   * 操作数据对密码的加密算法用Spring Security自带的加密方式
    */
   @Autowired
-  public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+  public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder)
+      throws Exception {
     authenticationManagerBuilder
         .userDetailsService(this.userDetailsService)
         .passwordEncoder(new BCryptPasswordEncoder());
   }
 
   /**
-   *  - httpSecurity
-   * WebSecurityConfigurerAdapter 的默认方法configure, 配置了HttpSecurity
-   * 用于设置哪些请求需要认证, 设置基于表单的认证
-   * @param httpSecurity
-   * @throws Exception
+   * - httpSecurity WebSecurityConfigurerAdapter 的默认方法configure, 配置了HttpSecurity 用于设置哪些请求需要认证,
+   * 设置基于表单的认证
    */
   @Override
   protected void configure(HttpSecurity httpSecurity) throws Exception {
@@ -68,9 +64,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         ).permitAll()// 允许对于网站静态资源的无授权访问
         .antMatchers("/auth/**").permitAll()// - 允许/auth/**下的访问
         .anyRequest().authenticated(); // - 除上面外的所有请求全部需要鉴权认证
+
     httpSecurity.headers().cacheControl();// - 禁用缓存
 
-    httpSecurity.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);// - 添加JWT filter
+    httpSecurity.exceptionHandling().accessDeniedHandler(accessDeniedHandler); // 无权访问 JSON 格式的数据
+
+    httpSecurity.addFilterBefore(authenticationTokenFilterBean(),
+        UsernamePasswordAuthenticationFilter.class);// - 添加JWT filter
   }
 
   @Bean
@@ -80,8 +80,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
   /**
    * 解决authenticationManager无法注入问题
-   * @return
-   * @throws Exception
    */
   @Bean(name = BeanIds.AUTHENTICATION_MANAGER)
   @Override

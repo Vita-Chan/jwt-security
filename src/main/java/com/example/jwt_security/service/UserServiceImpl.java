@@ -16,14 +16,14 @@ public class UserServiceImpl {
     return userMapper.findByUsername(username);
   }
 
-  public User findByUserId(int id){
+  public User findByUserId(int id) {
     List<String> strings = userMapper.queryUserRoles(id);
     User user = userMapper.findByUserId(id);
     user.setRoles(strings);
     return user;
   }
 
-  public int updateByUserToken(int id, String token){
-    return userMapper.updateByUserToken(id,token);
+  public int updateByUserToken(int id, String token) {
+    return userMapper.updateByUserToken(id, token);
   }
 }

@@ -29,7 +29,6 @@ public class JwtUser implements UserDetails {
 
   /**
    * 返回分配给用户的角色列表
-   * @return
    */
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -48,7 +47,6 @@ public class JwtUser implements UserDetails {
 
   /**
    * 账户是否未过期
-   * @return
    */
   @JsonIgnore  //将这个bean转化为json的时候 忽略这个属性
   @Override
@@ -58,7 +56,6 @@ public class JwtUser implements UserDetails {
 
   /**
    * 账户是否未锁定
-   * @return
    */
   @JsonIgnore
   @Override
@@ -68,7 +65,6 @@ public class JwtUser implements UserDetails {
 
   /**
    * 密码是否未过期
-   * @return
    */
   @JsonIgnore
   @Override
@@ -78,7 +74,6 @@ public class JwtUser implements UserDetails {
 
   /**
    * 账户是否激活
-   * @return
    */
   @JsonIgnore
   @Override

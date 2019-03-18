@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class JwtTokenUtil implements Serializable {
+
   private static final long serizlVersionUID = 3301605591108950415L;
 
   private static final String CLAIM_KEY_USERNAME = "sub";
@@ -35,10 +36,9 @@ public class JwtTokenUtil implements Serializable {
 
   @Autowired
   private UserMapper userMapper;
-  
+
   /**
    * 生成jwt的过期时间
-   * @return
    */
   private Date generateExpirationDate() {
     return new Date(System.currentTimeMillis() + expiration * 1000);
@@ -46,10 +46,8 @@ public class JwtTokenUtil implements Serializable {
 
   /**
    * 根据token获取用户名
-   * @param token
-   * @return
    */
-  public String getUsernameFromToken(String token){
+  public String getUsernameFromToken(String token) {
     String username;
     try {
       final Claims claims = getClaimsFromToken(token);
@@ -62,8 +60,6 @@ public class JwtTokenUtil implements Serializable {
 
   /**
    * 获取token的创建时间
-   * @param token
-   * @return
    */
   public Date getCreatedDateFromToken(String token) {
     Date created;
@@ -78,36 +74,33 @@ public class JwtTokenUtil implements Serializable {
 
   /**
    * 生成token
-   * @return
    */
-  public String generateToken(UserDetails userDetails){
+  public String generateToken(UserDetails userDetails) {
     Map<String, Object> claims = new HashMap<>();
     claims.put(CLAIM_KEY_USERNAME, userDetails.getUsername()); //标题是用户名
-    claims.put(CLAIM_KEY_CREATED,new Date()); //创建时间
+    claims.put(CLAIM_KEY_CREATED, new Date()); //创建时间
     return generateToken(claims);
   }
 
-  String generateToken(Map<String, Object> claims){
+  String generateToken(Map<String, Object> claims) {
     return Jwts.builder()
         .setClaims(claims)
         .setExpiration(generateExpirationDate())
-        .signWith(SignatureAlgorithm.HS512,secret)
+        .signWith(SignatureAlgorithm.HS512, secret)
         .compact();
   }
 
   /**
    * 获取token中包含的数据声明(claims)
-   * @param token
-   * @return
    */
-  public Claims getClaimsFromToken(String token){
+  public Claims getClaimsFromToken(String token) {
     Claims claims;
     try {
       claims = Jwts.parser()
           .setSigningKey(secret) //解析token的密码
           .parseClaimsJws(token) //要解析的token
           .getBody();
-    }catch (Exception e){
+    } catch (Exception e) {
       claims = null;
     }
     return claims;
@@ -115,9 +108,8 @@ public class JwtTokenUtil implements Serializable {
 
   /**
    * 获得这个token的过期时间
-   * @return
    */
-  public Date getExpirationDateFromToken(String token){
+  public Date getExpirationDateFromToken(String token) {
     Date expiration;
     try {
       final Claims claims = getClaimsFromToken(token);
@@ -130,8 +122,6 @@ public class JwtTokenUtil implements Serializable {
 
   /**
    * 判断这个token是否过期
-   * @param token
-   * @return
    */
   private Boolean isTokenExpired(String token) {
     final Date expiration = getExpirationDateFromToken(token);
@@ -140,13 +130,14 @@ public class JwtTokenUtil implements Serializable {
 
   /**
    * 判断创建时间是否大于最后一次登录时间
-   * @param created  创建时间
-   * @param lastPasswordReset  最后一次重置密码的时间
-   * @return
+   *
+   * @param created 创建时间
+   * @param lastPasswordReset 最后一次重置密码的时间
    */
-  private Boolean isCreatedBeforeLastPasswordReset(Date created, Date lastPasswordReset){
+  private Boolean isCreatedBeforeLastPasswordReset(Date created, Date lastPasswordReset) {
     return (lastPasswordReset != null && created.before(lastPasswordReset));
   }
+
   public Boolean canTokenBeRefreshed(String token, Date lastPasswordReset) {
     final Date created = getCreatedDateFromToken(token);
     return !isCreatedBeforeLastPasswordReset(created, lastPasswordReset)
@@ -155,8 +146,6 @@ public class JwtTokenUtil implements Serializable {
 
   /**
    * 刷新token
-   * @param token
-   * @return
    */
   public String refreshToken(String token) {
     String refreshedToken;
@@ -172,16 +161,15 @@ public class JwtTokenUtil implements Serializable {
 
   /**
    * 验证token
-   * @param token
-   * @param userDetails  相当于能获得用户信息
-   * @return
+   *
+   * @param userDetails 相当于能获得用户信息
    */
-  public Boolean validateToken(String token, UserDetails userDetails){
+  public Boolean validateToken(String token, UserDetails userDetails) {
     JwtUser user = (JwtUser) userDetails;
 
     String username = getUsernameFromToken(token);
     String userToken = userMapper.findByUsername(username).getToken();
-    if(!userToken.equals(token)){
+    if (!userToken.equals(token)) {
       return false;
     }
     return (username.equals(user.getUsername()) && !isTokenExpired(token));
